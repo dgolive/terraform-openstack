@@ -1,10 +1,29 @@
-provider "openstack" {
-  auth_url 		= "http://172.18.181.8:5000/v2"
-  project_domain_id     = "f1ceb8de28184e8cb578c8b699cc9fa5"
-  region                = "RegionOne"
-  tenant_name		= "admin"
-  user_domain_name      = "admin_domain"
-  user_name 		= "admin"
-  password 		= "xxxxxxxx"
-  tenant_id		= "005b1804ab0b4b3296e69bc2c3724ff0"
+# Define required providers
+terraform {
+  required_version = ">= 0.14.0"
+  required_providers {
+    openstack = {
+      source  = "terraform-provider-openstack/openstack"
+      version = "~> 1.53.0"
+    }
+  }
 }
+
+provider "vault" {
+  address = "http://vault.myhomelab"
+  # for token use: export VAULT_TOKEN="s.1234567890"
+}
+
+data "vault_generic_secret" "openstack_credentials" {
+  path = "secret/openstack/config"   # configuracao sem "data" no path
+}
+
+provider "openstack" {
+  auth_url    = "http://192.168.15.20:5000/v3"
+  region      = "RegionOne"
+  tenant_name = "admin"
+  user_name   = data.vault_generic_secret.openstack_credentials.data["username"]
+  password    = data.vault_generic_secret.openstack_credentials.data["password"]
+}
+
+
