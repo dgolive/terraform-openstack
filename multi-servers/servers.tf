@@ -1,17 +1,24 @@
-resource "openstack_compute_instance_v2" "instances-tf" {
-  name            = "test-tf-${count.index}"
-  region          = "RegionOne"
-  image_id        = "3239fc6e-8e48-4e8e-8f8a-c38f202a1fcc"
-  flavor_id       = "1"
-  key_pair        = "homelab-key"
-  security_groups = ["default", "SG-1"]
-  count           = 2
-
-  network {
-    name = "internal_network"
-  }
+data "openstack_images_image_v2" "cirros" {
+  name = var.openstack_image_name
 }
 
+data "openstack_compute_flavor_v2" "c4m16d40" {
+  name = var.openstack_flavor_name
+}
+
+resource "openstack_compute_instance_v2" "instances-tf" {
+  count           = var.count_instances
+  name            = "test-tf-${count.index}"
+  region          = var.openstack_region
+  image_id        = data.openstack_images_image_v2.cirros.id
+  flavor_id       = data.openstack_compute_flavor_v2.c4m16d40.id
+  key_pair        = var.openstack_keypair_name
+  security_groups = var.openstack_security_group_name
+
+  network {
+    name = var.openstack_network_name
+  }
+}
 
 # resource "openstack_networking_floatingip_v2" "fip_pool" {
 #   pool              = "ext_net"

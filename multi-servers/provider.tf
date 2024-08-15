@@ -15,7 +15,7 @@ provider "vault" {
 }
 
 data "vault_generic_secret" "openstack_credentials" {
-  path = "secret/openstack/config"   # configuracao sem "data" no path
+  path = "secret/openstack/config" # configuracao sem "data" no path
 }
 
 provider "openstack" {
