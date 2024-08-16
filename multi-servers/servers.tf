@@ -20,13 +20,15 @@ resource "openstack_compute_instance_v2" "instances-tf" {
   }
 }
 
-# resource "openstack_networking_floatingip_v2" "fip_pool" {
-#   pool              = "ext_net"
-# }
+resource "openstack_networking_floatingip_v2" "fip_pool" {
+  count       = var.count_instances
+  pool        = var.openstack_external_network_name
+  description = "Floating IP for instance ${openstack_compute_instance_v2.instances-tf[count.index].name}"
+}
 
-
-# resource "openstack_compute_floatingip_associate_v2" "fip_pool" {
-#   floating_ip 	    = "${openstack_networking_floatingip_v2.fip_pool.address}"
-#   instance_id 	    = "${openstack_compute_instance_v2.my_instance_tf[count.index]}"
-#   fixed_ip          = "${openstack_compute_instance_v2.my_instance_tf.network.0.fixed_ip_v4}"
-# }
+resource "openstack_compute_floatingip_associate_v2" "fip_pool" {
+  count       = var.count_instances
+  floating_ip = openstack_networking_floatingip_v2.fip_pool[count.index].address
+  instance_id = openstack_compute_instance_v2.instances-tf[count.index].id
+  fixed_ip    = openstack_compute_instance_v2.instances-tf[count.index].network.0.fixed_ip_v4
+}
