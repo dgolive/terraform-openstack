@@ -27,3 +27,12 @@ provider "openstack" {
 }
 
 
+terraform {
+  backend "remote" {
+    organization = "epontech"
+    workspaces {
+      name = "dev"
+    }
+  }
+}
+
