@@ -1,3 +1,3 @@
-# openstack single vm 
+# openstack multi-vms 
 
 ![GRAPH](terraform-graph.png)
