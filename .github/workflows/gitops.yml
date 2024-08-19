@@ -1,0 +1,39 @@
+name: Terraform CICD Pipeline for OpenStack
+
+on:
+  push:
+    branches: 
+      - dev
+      - main
+    paths:
+      # - 'terraform-openstack/**'
+      - 'terraform-openstack/single-vm/**'
+
+jobs:
+  terraform-cicd:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.9.4
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: terraform-openstack/single-vm
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: terraform-openstack/single-vm
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+        working-directory: terraform-openstack/single-vm
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
+        working-directory: terraform-openstack/single-vm
