@@ -1,0 +1,43 @@
+name: Terraform CICD
+
+on:
+  push:
+    branches:
+      - main
+
+variables:
+  # OS_USERNAME: ${{ secrets.OS_USERNAME }}
+  # OS_PASSWORD: ${{ secrets.OS_PASSWORD }}
+  # OS_PROJECT_NAME: ${{ secrets.OS_PROJECT_NAME }}
+  # OS_AUTH_URL: ${{ secrets.OS_AUTH_URL }}
+  # OS_REGION_NAME: ${{ secrets.OS_REGION_NAME }}
+  # OS_USER_DOMAIN_NAME: ${{ secrets.OS_USER_DOMAIN_NAME }}
+  # OS_PROJECT_DOMAIN_NAME: ${{ secrets.OS_PROJECT_DOMAIN_NAME }}
+  # OS_INTERFACE: public
+  # OS_IDENTITY_API_VERSION: 3
+  working-directory: terraform-openstack/single-vm
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.9.4
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
