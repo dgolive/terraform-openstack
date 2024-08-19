@@ -8,9 +8,8 @@ on:
     #   # - 'terraform-openstack/**'
     #   - 'terraform-openstack/single-vm/**'
 jobs:
-  terraform:
-    runs-on: ubuntu-latest
-
+  build:
+    runs-on: bash
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -20,6 +19,9 @@ jobs:
         with:
           terraform_version: 1.9.4
 
+  deploy:
+    runs-on: bash
+    steps:
       - name: Terraform Init
         run: terraform init
         working-directory: terraform-openstack/single-vm
