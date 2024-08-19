@@ -1,21 +1,12 @@
-name: Terraform CICD
+name: Terraform CICD Pipeline for OpenStack
 
 on:
   push:
     branches:
-      - main
-
-variables:
-  # OS_USERNAME: ${{ secrets.OS_USERNAME }}
-  # OS_PASSWORD: ${{ secrets.OS_PASSWORD }}
-  # OS_PROJECT_NAME: ${{ secrets.OS_PROJECT_NAME }}
-  # OS_AUTH_URL: ${{ secrets.OS_AUTH_URL }}
-  # OS_REGION_NAME: ${{ secrets.OS_REGION_NAME }}
-  # OS_USER_DOMAIN_NAME: ${{ secrets.OS_USER_DOMAIN_NAME }}
-  # OS_PROJECT_DOMAIN_NAME: ${{ secrets.OS_PROJECT_DOMAIN_NAME }}
-  # OS_INTERFACE: public
-  # OS_IDENTITY_API_VERSION: 3
-  working-directory: terraform-openstack/single-vm
+      - dev
+    paths:
+      # - 'terraform-openstack/**'
+      - 'terraform-openstack/single-vm/**'
 
 jobs:
   terraform:
@@ -25,19 +16,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.9.4
 
       - name: Terraform Init
         run: terraform init
+        working-directory: terraform-openstack/single-vm
 
       - name: Terraform Validate
         run: terraform validate
+        working-directory: terraform-openstack/single-vm
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan
+        working-directory: terraform-openstack/single-vm
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
+        working-directory: terraform-openstack/single-vm
