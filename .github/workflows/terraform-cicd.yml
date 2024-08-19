@@ -1,10 +1,9 @@
-name: Terraform CICD Pipeline for OpenStack
+name: Terraform CICD for OpenStack
 
 on:
   push:
     branches: 
       - main
-      - dev
     paths:
       # - 'terraform-openstack/**'
       - 'terraform-openstack/single-vm/**'
