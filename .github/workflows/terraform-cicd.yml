@@ -18,10 +18,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.9.4
+      # - name: Setup Terraform
+      #   uses: hashicorp/setup-terraform@v2
+      #   with:
+      #     terraform_version: 1.9.4
+      - name: Install Terraform
+        run: |
+          wget https://releases.hashicorp.com/terraform/1.9.4/terraform_1.9.4_linux_amd64.zip
+          unzip terraform_1.9.4_linux_amd64.zip
+          sudo mv terraform /usr/local/bin/
+          terraform --version
+        shell: bash
 
   deploy:
     # runs-on: ubuntu-latest
