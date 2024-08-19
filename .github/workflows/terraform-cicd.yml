@@ -30,10 +30,23 @@ jobs:
           terraform --version
         shell: bash
 
+  security_check:
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - name: Install tfsec
+        run: |
+          wget https://github.com/aquasecurity/tfsec/releases/download/v1.28.10/tfsec-linux-amd64
+          chmod +x tfsec-linux-amd64
+          sudo mv tfsec-linux-amd64 /usr/local/bin/tfsec
+
+      - name: Run tfsec
+        run: tfsec single-vm
+
   deploy:
     # runs-on: ubuntu-latest
     runs-on: self-hosted
-    needs: build
+    needs: security_check
     steps:
       - name: Terraform Init
         run: terraform init
@@ -49,17 +62,7 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
-        working-directory: single-vm
-     
-      - name: Install tfsec
-        run: |
-          wget https://github.com/aquasecurity/tfsec/releases/download/v1.28.10/tfsec-linux-amd64
-          chmod +x tfsec-linux-amd64
-          sudo mv tfsec-linux-amd64 /usr/local/bin/tfsec
-
-      - name: Run tfsec
-        run: tfsec single-vm
-        
+        working-directory: single-vm      
 
       # - name: Terraform Output
       #   run: terraform output
