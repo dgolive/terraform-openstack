@@ -68,6 +68,6 @@ jobs:
       #   run: terraform output
       #   working-directory: single-vm
 
-      # - name: Terraform Destroy
-      #   run: terraform destroy -auto-approve
-      #   working-directory: single-vm  
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
+        working-directory: single-vm  
