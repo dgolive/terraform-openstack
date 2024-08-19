@@ -59,7 +59,7 @@ jobs:
 
       - name: Run tfsec
         run: tfsec single-vm
-        working-directory: single-vm
+        
 
       # - name: Terraform Output
       #   run: terraform output
